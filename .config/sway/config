@@ -39,7 +39,7 @@ bindsym $mod+Shift+c reload
 bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'
 
 ## Personal
-bindsym $mod+Shift+n exec foot -T nnn nnn
+bindsym $mod+Shift+n exec foot -T lf lf
 bindsym $mod+Shift+b exec librewolf
 bindsym $mod+semicolon exec bemoji
 bindsym $mod+comma exec clip-manager
@@ -88,11 +88,11 @@ bindsym XF86MonBrightnessDown exec brightnessctl set 5%-
 bindsym XF86MonBrightnessUp exec brightnessctl set +5%
 
 ### Screenshot to clipboard
-bindsym Print exec grim - | wl-copy
+bindsym Print exec grim-copy 
 bindsym $mod+Print exec grim
 
 ### Screenshot specified screen area to clipboard
-bindsym $mod+Shift+s exec grim -g "$(slurp)" - | wl-copy
+bindsym $mod+Shift+s exec grim-slurp
 
 ### Screenshot the focused monitor to clipboard
 bindsym $mod+Shift+Print exec grim -o $(swaymsg -t get_outputs | jq -r '.[] | select(.focused) | .name') - | wl-copy
@@ -172,7 +172,6 @@ client.urgent            $yellow         $yellow          $fg      $yellow    $y
 #}
 
 #exec_always sh -c "pkill -x yambar; yambar -c .config/yambar/sway-config.yml &"
-exec_always sh -c "pkill -x waybar; waybar -c .config/waybar/tiling-config -s .config/waybar/tiling-style.css >/dev/null 2>&1 &"
 
 ## Borders
 default_border pixel 2
