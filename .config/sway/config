@@ -34,6 +34,7 @@ input "type:keyboard" {
 }
 
 floating_modifier $mod normal
+focus_follows_mouse no
 
 # ====================
 # Key Bindings
@@ -94,7 +95,7 @@ bindsym XF86AudioMute exec amixer sset Master toggle
 bindsym XF86MonBrightnessDown exec brightnessctl set 5%-
 bindsym XF86MonBrightnessUp exec brightnessctl set +5%
 
-bindsym Print exec grim-copy 
+bindsym Print exec grim-copy
 bindsym $mod+Print exec grim
 bindsym $mod+Shift+s exec grim-slurp
 bindsym $mod+Shift+Print exec grim -o $(swaymsg -t get_outputs | jq -r '.[] | select(.focused) | .name') - | wl-copy
