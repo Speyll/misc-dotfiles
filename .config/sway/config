@@ -8,7 +8,7 @@ set $menu fuzzel
 # ====================
 # Autostart
 # ====================
-exec $HOME/.config/autostart/autostart.sh
+exec $HOME/.config/autostart/autostart
 
 # ====================
 # Input Devices
@@ -131,28 +131,30 @@ bindsym $mod+agrave scratchpad show
 seat seat0 xcursor_theme Breeze_Snow 24
 
 # Color Variables
-set $bg     #282828BF
-set $fg     #ebdbb2
-set $aqua   #427b58
-set $yellow #fabd2f
-set $brown  #3c3836
+include $HOME/.config/sway/config.d/colors*
+
+set $bg $base00 
+set $fg $base07
+set $accent $base0C
+set $urgent $base0A
+set $unslec $base03
 
 # Window Colors
-client.focused           $aqua           $aqua            $brown   $aqua      $aqua
-client.focused_inactive  $brown          $brown           $fg      $brown     $brown
-client.unfocused         $brown          $brown           $fg      $brown     $brown
-client.urgent            $yellow         $yellow          $fg      $yellow    $yellow
+client.focused           $accent        $accent         $unslec     $accent     $accent
+client.focused_inactive  $unslec        $unslec         $fg         $unslec     $unslec
+client.unfocused         $unslec        $unslec         $fg         $unslec     $unslec
+client.urgent            $urgent        $urgent         $fg         $urgent     $urgent
 
 # Bar Configuration
 #bar {
 #  colors {
 #    background $bg
 #    statusline $fg
-#    separator $aqua
-#    focused_workspace  $aqua     $aqua           $bg
-#    active_workspace   $aqua     $brown          $aqua
-#    inactive_workspace $brown    $brown          $fg
-#    urgent_workspace   $yellow   $yellow         $brown
+#    separator $accent
+#    focused_workspace  $accent     $accent     $bg
+#    active_workspace   $accent     $unslec     $accent
+#    inactive_workspace $unslec     $unslec     $fg
+#    urgent_workspace   $urgent     $urgent     $unslec
 #  }
 #  position bottom
 #  height 24
@@ -161,7 +163,8 @@ client.urgent            $yellow         $yellow          $fg      $yellow    $y
 #  status_command $HOME/.config/sway/sway-start-bar.sh
 #}
 
-#exec_always sh -c "pkill -x yambar; yambar -c .config/yambar/sway-config.yml &"
+#exec_always sh -c "pkill -x yambar; yambar -c .config/yambar/sway-config.yml >/dev/null 2>&1 &"
+exec_always sh -c "pkill -x waybar; waybar -c ~/.config/waybar/tiling-config -s ~/.config/waybar/style.css >/dev/null 2>&1 &"
 
 # ====================
 # Borders and Gaps

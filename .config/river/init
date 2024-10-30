@@ -3,7 +3,8 @@
 # ====================
 # Autostart
 # ====================
-$HOME/.config/autostart/autostart.sh &
+$HOME/.config/autostart/autostart >/dev/null 2>&1 &
+pkill -x waybar; waybar -c "$HOME/.config/waybar/tiling-config" -s "$HOME/.config/waybar/style.css" >/dev/null 2>&1 &
 
 # ====================
 # Default Settings
@@ -15,10 +16,12 @@ rivertile -view-padding 2 -outer-padding 2 -main-ratio 0.5 -main-location left -
 # ====================
 # Appearance and Settings
 # ====================
-riverctl border-width 2
-riverctl background-color 0x282828ff
+# Start flavours
+riverctl background-color 0xfbf1c7ff
 riverctl border-color-focused 0x427b58ff
-riverctl border-color-unfocused 0x282828ff
+riverctl border-color-unfocused 0xfbf1c7ff
+# End flavours
+riverctl border-width 2
 riverctl xcursor-theme Breeze_Snow
 riverctl hide-cursor timeout 5000
 
