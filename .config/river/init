@@ -33,8 +33,8 @@ riverctl map normal Super Return spawn 'foot'
 riverctl map normal Super D spawn 'fuzzel'
 riverctl map normal Super+Shift Q close
 riverctl map normal Super+Shift E exit
-riverctl map normal Super+Print spawn 'grim'
-riverctl map normal Super+Shift S spawn 'grim-slurp'
+riverctl map normal Super+Print spawn 'grim-print copy'
+riverctl map normal Super+Shift S spawn 'grim-print slurp'
 riverctl map normal Super Semicolon spawn 'bemoji'
 riverctl map normal Super Comma spawn 'clip-manager'
 
