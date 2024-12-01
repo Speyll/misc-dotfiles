@@ -133,7 +133,7 @@ seat seat0 xcursor_theme Breeze_Snow 24
 # Color Variables
 include $HOME/.config/sway/config.d/colors*
 
-set $bg $base00 
+set $bg $base00
 set $fg $base07
 set $accent $base0C
 set $urgent $base0A
