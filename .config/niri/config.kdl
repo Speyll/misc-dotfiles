@@ -71,6 +71,10 @@ layout {
     }
 }
 
+spawn-at-startup "xwayland-satellite"
+    environment {
+        DISPLAY ":0"
+    }
 spawn-at-startup "~/.config/autostart/autostart"
 spawn-at-startup "~/.config/niri/waybar"
 screenshot-path "~/pictures/grim/%Y-%m-%d %H-%M-%S.png"
@@ -104,7 +108,13 @@ window-rule {
     match app-id="pcmanfm-qt"
     match app-id="com.chatterino.chatterino"
     match app-id="spotube"
-    opacity 0.97
+    opacity 0.98
+}
+
+window-rule {
+    match app-id="firefox$" title="^Picture-in-Picture$"
+    open-floating true
+    default-floating-position x=32 y=32 relative-to="bottom-left"
 }
 
 binds {
@@ -112,6 +122,7 @@ binds {
 
     Mod+Return { spawn "foot"; }
     Mod+D { spawn "fuzzel"; }
+    Mod+Shift+Return { spawn "fuzz-launcher"; }
     Super+Alt+L { spawn "swaylock"; }
 
     XF86AudioRaiseVolume allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.1+"; }
@@ -237,8 +248,8 @@ binds {
     Mod+Print { screenshot-screen; }
     Alt+Print { screenshot-window; }
 
-    Mod+Shift+C { spawn "sh" "-c" "env DISPLAY=:0 xsel -ob | wl-copy"; }
-    Mod+Shift+V { spawn "sh" "-c" "wl-paste -n | env DISPLAY=:0 xsel -ib"; }
+    Mod+V       { toggle-window-floating; }
+    Mod+Shift+V { switch-focus-between-floating-and-tiling; }
 
     Mod+Shift+E { quit; }
     Ctrl+Alt+Delete { quit; }

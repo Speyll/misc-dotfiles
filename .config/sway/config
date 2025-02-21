@@ -48,10 +48,11 @@ bindsym $mod+Shift+c reload
 bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'
 
 ## Custom
-bindsym $mod+Shift+n exec foot -T nnn nnn
+bindsym $mod+Shift+n exec foot -T yazi yazi
 bindsym $mod+Shift+b exec librewolf
 bindsym $mod+period exec bemoji
 bindsym $mod+comma exec clip-manager
+bindsym $mod+Shift+Return exec fuzz-launcher
 
 ## Navigation
 bindsym $mod+Left focus left
@@ -122,8 +123,8 @@ mode "resize" {
 }
 
 ## Scratchpad
-bindsym $mod+Shift+agrave move scratchpad
-bindsym $mod+agrave scratchpad show
+bindsym $mod+Shift+0 move scratchpad
+bindsym $mod+0 scratchpad show
 
 # ====================
 # Customization
@@ -133,7 +134,7 @@ seat seat0 xcursor_theme Breeze_Snow 24
 # Color Variables
 include $HOME/.config/sway/config.d/colors*
 
-set $bg $base00 
+set $bg $base00
 set $fg $base07
 set $accent $base0C
 set $urgent $base0A
