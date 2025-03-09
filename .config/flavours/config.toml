@@ -46,19 +46,6 @@ file = "~/.config/fnott/fnott.ini"
 template = "fnott"
 
 [[item]]
-file = "~/.local/share/themes/FlatColor/colors3"
-template = "gtk-flatcolor"
-subtemplate = "gtk-3"
-rewrite = true
-hook = "gsettings set org.gnome.desktop.interface gtk-theme dummy && gsettings set org.gnome.desktop.interface gtk-theme FlatColor"
-
-[[item]]
-file = "~/.local/share/themes/FlatColor/colors2"
-template = "gtk-flatcolor"
-subtemplate = "gtk-2"
-rewrite = true
-
-[[item]]
 file = "~/.config/swayimg/config"
 template = "swayimg"
 
@@ -69,6 +56,13 @@ subtemplate = "colors"
 rewrite = true
 light = false
 hook = "swaymsg reload"
+
+[[items]]
+file = "~/.config/hypr/colors.conf"
+template = "hyprland"
+subtemplate = "colors"
+rewrite = true
+hook = "hyprctl reload"
 
 [[item]]
 file = "~/.config/river/init"
