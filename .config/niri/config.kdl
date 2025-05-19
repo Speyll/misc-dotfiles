@@ -73,7 +73,7 @@ layout {
 
 overview {
     zoom 0.50
-    backdrop-color "#777777"
+    backdrop-color "#282828"
 }
 
 hotkey-overlay {
@@ -133,21 +133,30 @@ window-rule {
 }
 
 binds {
-    Mod+Shift+Slash { show-hotkey-overlay; }
-
-    Alt+Tab { toggle-overview; }
+// Personal Keybinds
     Mod+Return { spawn "foot"; }
     Mod+D { spawn "fuzzel"; }
     Mod+Shift+Return { spawn "fuzz-launcher"; }
     Super+Alt+L { spawn "swaylock"; }
+    Super+period { spawn "bemoji"; }
+    Super+comma { spawn "clip-manager"; }
+    F10 { spawn "/home/lyes/videos/rec/pipobs/bin/python3" "/home/lyes/videos/rec/pipobs/replay.py"; }
 
-    XF86AudioRaiseVolume allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.1+"; }
-    XF86AudioLowerVolume allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.1-"; }
-    XF86AudioMute        allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
-    XF86AudioMicMute     allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle"; }
-
+// Niri Actions
     Mod+Shift+Q { close-window; }
+    Alt+Tab { toggle-overview; }
+    Mod+Shift+Slash { show-hotkey-overlay; }
 
+    Mod+Shift+E { quit; }
+    Ctrl+Alt+Delete { quit; }
+    Mod+Shift+P { power-off-monitors; }
+
+// Float
+    Mod+V       { toggle-window-floating; }
+    Mod+Shift+V { switch-focus-between-floating-and-tiling; }
+
+// Focus
+    // Window/Columns
     Mod+Left  { focus-column-left; }
     Mod+Down  { focus-window-down; }
     Mod+Up    { focus-window-up; }
@@ -157,20 +166,24 @@ binds {
     Mod+K     { focus-window-up; }
     Mod+L     { focus-column-right; }
 
-    Mod+Shift+Left  { move-column-left; }
-    Mod+Shift+Down  { move-window-down; }
-    Mod+Shift+Up    { move-window-up; }
-    Mod+Shift+Right { move-column-right; }
-    Mod+Shift+H     { move-column-left; }
-    Mod+Shift+J     { move-window-down; }
-    Mod+Shift+K     { move-window-up; }
-    Mod+Shift+L     { move-column-right; }
-
     Mod+Home { focus-column-first; }
     Mod+End  { focus-column-last; }
-    Mod+Ctrl+Home { move-column-to-first; }
-    Mod+Ctrl+End  { move-column-to-last; }
 
+    // Workspace
+    Mod+1 { focus-workspace 1; }
+    Mod+2 { focus-workspace 2; }
+    Mod+3 { focus-workspace 3; }
+    Mod+4 { focus-workspace 4; }
+    Mod+5 { focus-workspace 5; }
+    Mod+6 { focus-workspace 6; }
+    Mod+7 { focus-workspace 7; }
+    Mod+8 { focus-workspace 8; }
+    Mod+9 { focus-workspace 9; }
+
+    Mod+Page_Down      { focus-workspace-down; }
+    Mod+Page_Up        { focus-workspace-up; }
+
+    // Monitor
     Ctrl+Left  { focus-monitor-left; }
     Ctrl+Down  { focus-monitor-down; }
     Ctrl+Up    { focus-monitor-up; }
@@ -180,6 +193,37 @@ binds {
     Ctrl+K     { focus-monitor-up; }
     Ctrl+L     { focus-monitor-right; }
 
+// Move
+    // Window/Column
+    Mod+Shift+Left  { move-column-left; }
+    Mod+Shift+Down  { move-window-down; }
+    Mod+Shift+Up    { move-window-up; }
+    Mod+Shift+Right { move-column-right; }
+    Mod+Shift+H     { move-column-left; }
+    Mod+Shift+J     { move-window-down; }
+    Mod+Shift+K     { move-window-up; }
+    Mod+Shift+L     { move-column-right; }
+
+    Mod+Ctrl+Home { move-column-to-first; }
+    Mod+Ctrl+End  { move-column-to-last; }
+
+    // Workspace
+    Mod+Shift+1 { move-column-to-workspace 1; }
+    Mod+Shift+2 { move-column-to-workspace 2; }
+    Mod+Shift+3 { move-column-to-workspace 3; }
+    Mod+Shift+4 { move-column-to-workspace 4; }
+    Mod+Shift+5 { move-column-to-workspace 5; }
+    Mod+Shift+6 { move-column-to-workspace 6; }
+    Mod+Shift+7 { move-column-to-workspace 7; }
+    Mod+Shift+8 { move-column-to-workspace 8; }
+    Mod+Shift+9 { move-column-to-workspace 9; }
+
+    Alt+Up { move-column-to-workspace-up; }
+    Alt+Down { move-column-to-workspace-down; }
+    Alt+Left { consume-or-expel-window-left; }
+    Alt+Right { consume-or-expel-window-right; }
+
+    // Monitor
     Shift+Ctrl+Left  { move-column-to-monitor-left; }
     Shift+Ctrl+Down  { move-column-to-monitor-down; }
     Shift+Ctrl+Up    { move-column-to-monitor-up; }
@@ -189,23 +233,26 @@ binds {
     Shift+Ctrl+K     { move-column-to-monitor-up; }
     Shift+Ctrl+L     { move-column-to-monitor-right; }
 
-    Mod+Page_Down      { focus-workspace-down; }
-    Mod+Page_Up        { focus-workspace-up; }
-    Mod+U              { focus-workspace-down; }
-    Mod+I              { focus-workspace-up; }
-    Mod+Alt+Page_Down { move-column-to-workspace-down; }
-    Mod+Alt+Page_Up   { move-column-to-workspace-up; }
-    Mod+Ctrl+U         { move-column-to-workspace-down; }
-    Mod+Ctrl+I         { move-column-to-workspace-up; }
+// Consume/Expel
+    Mod+BracketLeft  { consume-window-into-column; }
+    Mod+BracketRight { expel-window-from-column; }
 
-    Alt+Up { move-column-to-workspace-up; }
-    Alt+Down { move-column-to-workspace-down; }
+// Size
+    Mod+F { maximize-column; }
+    Mod+Shift+F { fullscreen-window; }
+    Mod+Ctrl+F { toggle-windowed-fullscreen; }
+    Mod+R { switch-preset-column-width; }
+    Mod+Shift+R { switch-preset-window-height; }
+    Mod+Ctrl+R { reset-window-height; }
+    Mod+C { center-column; }
 
-    Mod+Shift+Page_Down { move-workspace-down; }
-    Mod+Shift+Page_Up   { move-workspace-up; }
-    Mod+Shift+U         { move-workspace-down; }
-    Mod+Shift+I         { move-workspace-up; }
+    Mod+Minus { set-column-width "-10%"; }
+    Mod+Equal { set-column-width "+10%"; }
 
+    Mod+Shift+Minus { set-window-height "-10%"; }
+    Mod+Shift+Equal { set-window-height "+10%"; }
+
+// Mouse
     Alt+WheelScrollDown      cooldown-ms=150 { focus-workspace-down; }
     Alt+WheelScrollUp        cooldown-ms=150 { focus-workspace-up; }
     Mod+Alt+WheelScrollDown cooldown-ms=150 { move-column-to-workspace-down; }
@@ -221,55 +268,14 @@ binds {
     Mod+Shift+WheelScrollDown { move-column-right; }
     Mod+Shift+WheelScrollUp   { move-column-left; }
 
-    Mod+1 { focus-workspace 1; }
-    Mod+2 { focus-workspace 2; }
-    Mod+3 { focus-workspace 3; }
-    Mod+4 { focus-workspace 4; }
-    Mod+5 { focus-workspace 5; }
-    Mod+6 { focus-workspace 6; }
-    Mod+7 { focus-workspace 7; }
-    Mod+8 { focus-workspace 8; }
-    Mod+9 { focus-workspace 9; }
-    Mod+Shift+1 { move-column-to-workspace 1; }
-    Mod+Shift+2 { move-column-to-workspace 2; }
-    Mod+Shift+3 { move-column-to-workspace 3; }
-    Mod+Shift+4 { move-column-to-workspace 4; }
-    Mod+Shift+5 { move-column-to-workspace 5; }
-    Mod+Shift+6 { move-column-to-workspace 6; }
-    Mod+Shift+7 { move-column-to-workspace 7; }
-    Mod+Shift+8 { move-column-to-workspace 8; }
-    Mod+Shift+9 { move-column-to-workspace 9; }
-
-    Alt+Left { consume-or-expel-window-left; }
-    Alt+Right { consume-or-expel-window-right; }
-
-    Mod+BracketLeft  { consume-window-into-column; }
-    Mod+BracketRight { expel-window-from-column; }
-
-    Mod+R { switch-preset-column-width; }
-    Mod+Shift+R { switch-preset-window-height; }
-    Mod+Ctrl+R { reset-window-height; }
-    Mod+F { maximize-column; }
-    Mod+Shift+F { fullscreen-window; }
-    Mod+Ctrl+Shift+F { toggle-windowed-fullscreen; }
-    Mod+C { center-column; }
-
-    Mod+Minus { set-column-width "-10%"; }
-    Mod+Equal { set-column-width "+10%"; }
-
-    Mod+Shift+Minus { set-window-height "-10%"; }
-    Mod+Shift+Equal { set-window-height "+10%"; }
-
+// Media Keys
     Print { screenshot; }
     Mod+Shift+S { screenshot; }
     Mod+Print { screenshot-screen; }
     Alt+Print { screenshot-window; }
 
-    Mod+V       { toggle-window-floating; }
-    Mod+Shift+V { switch-focus-between-floating-and-tiling; }
-
-    Mod+Shift+E { quit; }
-    Ctrl+Alt+Delete { quit; }
-
-    Mod+Shift+P { power-off-monitors; }
+    XF86AudioRaiseVolume allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.1+"; }
+    XF86AudioLowerVolume allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.1-"; }
+    XF86AudioMute        allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
+    XF86AudioMicMute     allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle"; }
 }
