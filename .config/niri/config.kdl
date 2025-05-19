@@ -26,7 +26,7 @@ input {
 }
 
 cursor {
-    xcursor-theme "Breeze_Snow"
+    xcursor-theme "Kaela-Kovalskia-v2"
     xcursor-size 24
 }
 
@@ -46,7 +46,7 @@ layout {
     default-column-width {}
 
     focus-ring {
-        // off
+        off
         width 1.5
         active-color "#d5c4a1"
         inactive-color "#282828"
@@ -71,6 +71,15 @@ layout {
     }
 }
 
+overview {
+    zoom 0.50
+    backdrop-color "#777777"
+}
+
+hotkey-overlay {
+    skip-at-startup
+}
+
 spawn-at-startup "xwayland-satellite"
     environment {
         DISPLAY ":0"
@@ -88,7 +97,7 @@ animations {
 }
 
 window-rule {
-    geometry-corner-radius 6
+    geometry-corner-radius 8
     clip-to-geometry true
     draw-border-with-background false
 }
@@ -108,7 +117,7 @@ window-rule {
     match app-id="pcmanfm-qt"
     match app-id="com.chatterino.chatterino"
     match app-id="spotube"
-    opacity 0.98
+//    opacity 0.98
 }
 
 window-rule {
@@ -120,12 +129,13 @@ window-rule {
 window-rule {
     match app-id="pavucontrol$"
     open-floating true
-    default-floating-position x=16 y=16 relative-to="bottom-right"
+    default-floating-position x=4 y=4 relative-to="bottom-right"
 }
 
 binds {
     Mod+Shift+Slash { show-hotkey-overlay; }
 
+    Alt+Tab { toggle-overview; }
     Mod+Return { spawn "foot"; }
     Mod+D { spawn "fuzzel"; }
     Mod+Shift+Return { spawn "fuzz-launcher"; }
@@ -241,6 +251,7 @@ binds {
     Mod+Ctrl+R { reset-window-height; }
     Mod+F { maximize-column; }
     Mod+Shift+F { fullscreen-window; }
+    Mod+Ctrl+Shift+F { toggle-windowed-fullscreen; }
     Mod+C { center-column; }
 
     Mod+Minus { set-column-width "-10%"; }
