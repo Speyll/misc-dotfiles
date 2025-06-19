@@ -1,5 +1,22 @@
 prefer-no-csd
 
+output "DP-2" {
+    mode "1920x1080@120.000"
+    scale 1.0
+    transform "normal"
+    position x=0 y=0
+    variable-refresh-rate // on-demand=true
+    focus-at-startup
+}
+
+output "HDMI-A-1" {
+    mode "1920x1080@60.000"
+    scale 1.0
+    transform "270"
+    position x=-1080 y=-840
+    variable-refresh-rate // on-demand=true
+}
+
 input {
     keyboard {
         xkb {
@@ -22,6 +39,14 @@ input {
 
     trackpoint {
         off
+    }
+
+    touch {
+        map-to-output "DP-2"
+    }
+
+    tablet {
+        map-to-output "DP-2"
     }
 }
 
@@ -69,6 +94,25 @@ layout {
         // top 64
         // bottom 64
     }
+
+    tab-indicator {
+        // off
+        hide-when-single-tab
+        place-within-column
+        gap 2
+        width 8
+        length total-proportion=0.5
+        position "left"
+        gaps-between-tabs 8
+        corner-radius 5
+        active-color "#d5c4a1"
+        inactive-color "#282828"
+        urgent-color "blue"
+        // active-gradient from="#80c8ff" to="#bbddff" angle=45
+        // inactive-gradient from="#505050" to="#808080" angle=45 relative-to="workspace-view"
+        // urgent-gradient from="#800" to="#a33" angle=45
+    }
+
 }
 
 overview {
@@ -134,7 +178,7 @@ window-rule {
 
 binds {
 // Personal Keybinds
-    Mod+Return { spawn "foot"; }
+    Mod+Return { spawn "alacritty"; }
     Mod+D { spawn "fuzzel"; }
     Mod+Shift+Return { spawn "fuzz-launcher"; }
     Super+Alt+L { spawn "swaylock"; }
@@ -146,6 +190,7 @@ binds {
     Mod+Shift+Q { close-window; }
     Alt+Tab { toggle-overview; }
     Mod+Shift+Slash { show-hotkey-overlay; }
+    Mod+T { toggle-column-tabbed-display; }
 
     Mod+Shift+E { quit; }
     Ctrl+Alt+Delete { quit; }
@@ -228,10 +273,10 @@ binds {
     Shift+Ctrl+Down  { move-column-to-monitor-down; }
     Shift+Ctrl+Up    { move-column-to-monitor-up; }
     Shift+Ctrl+Right { move-column-to-monitor-right; }
-    Shift+Ctrl+H     { move-column-to-monitor-left; }
-    Shift+Ctrl+J     { move-column-to-monitor-down; }
-    Shift+Ctrl+K     { move-column-to-monitor-up; }
-    Shift+Ctrl+L     { move-column-to-monitor-right; }
+//    Shift+Ctrl+H     { move-column-to-monitor-left; }
+//    Shift+Ctrl+J     { move-column-to-monitor-down; }
+//    Shift+Ctrl+K     { move-column-to-monitor-up; }
+//    Shift+Ctrl+L     { move-column-to-monitor-right; }
 
 // Consume/Expel
     Mod+BracketLeft  { consume-window-into-column; }
@@ -240,7 +285,8 @@ binds {
 // Size
     Mod+F { maximize-column; }
     Mod+Shift+F { fullscreen-window; }
-    Mod+Ctrl+F { toggle-windowed-fullscreen; }
+    Mod+Ctrl+F { expand-column-to-available-width; }
+    Mod+Alt+F { toggle-windowed-fullscreen; }
     Mod+R { switch-preset-column-width; }
     Mod+Shift+R { switch-preset-window-height; }
     Mod+Ctrl+R { reset-window-height; }
