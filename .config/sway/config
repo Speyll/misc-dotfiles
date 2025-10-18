@@ -109,7 +109,7 @@ bindsym $mod+m layout stacking
 bindsym $mod+t layout tabbed
 bindsym $mod+e layout toggle split
 bindsym $mod+f fullscreen
-bindsym $mod+s sticky
+bindsym $mod+s sticky enable
 bindsym $mod+Shift+f floating toggle
 
 ## Resizing
