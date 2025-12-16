@@ -1,0 +1,216 @@
+@import "colors.css";
+
+* {
+    font-family: sans-serif;
+    font-size: 14px;
+    min-height: 0;
+    border-radius: 0;
+    padding: 0;
+    margin: 0;
+}
+
+#waybar {
+    background-color: inherit;
+    color: @base05;
+    border-radius: 6px;
+}
+
+
+button {
+    box-shadow: none; /* Remove predefined box-shadow */
+    text-shadow: none; /* Remove predefined text-shadow */
+    background: none; /* Remove predefined background color (white) */
+    transition: none; /* Disable predefined animations */
+    border: none;
+}
+
+button:hover {
+    box-shadow: none; /* Remove predefined box-shadow */
+    text-shadow: none; /* Remove predefined text-shadow */
+    background: none; /* Remove predefined background color (white) */
+    transition: none; /* Disable predefined animations */
+    border: none;
+}
+
+tooltip {
+    padding: 0;
+    margin: 0;
+    background-color: @bg;
+    color: @base05;
+    border-width: 0px;
+    border-color: @base0C;
+    border-radius: 8px;
+}
+
+tooltip label {
+    padding: 0;
+    margin: 0;
+    background-color: inherit;
+    color: @base05;
+}
+
+.modules-left {
+    background-color: inherit;
+    border-radius: 0;
+}
+
+.modules-center {
+    background-color: inherit;
+    border-radius: 0;
+}
+
+.modules-right {
+    background-color: inherit;
+    border-radius: 0;
+}
+
+/* If workspaces is the leftmost module, omit left margin */
+.modules-left > widget:first-child > #workspaces {
+    margin-left: 0;
+    padding-left: 0;
+}
+
+/* If workspaces is the rightmost module, omit right margin */
+.modules-right > widget:last-child > #workspaces {
+    margin-right: 0;
+    padding-right: 0;
+}
+
+#workspaces, #tags {
+    margin: 0;
+}
+
+#workspaces button, #tags button {
+    border-radius: 4px;
+    padding: 0 6px 0 6px;
+    color: @base05;
+    background-color: transparent;
+}
+
+#workspaces button:hover, #tags button:hover {
+    color: @base05;
+    background-color: @base01;
+}
+
+#workspaces button.focused, #tags button.focused, #workspaces button.active, #tags button.active {
+    color: @base00;
+    background-color: @base0C;
+}
+
+#workspaces button.urgent, #tags button.urgent {
+    color: @base00;
+    background-color: @base0A;
+}
+
+#window {
+    padding: 0 4px 0 4px;
+    color: @base07;
+}
+
+#window.empty, #window.solo {
+    padding: 0;
+    background-color: transparent;
+}
+
+#taskbar {
+    font-style: normal;
+    font-weight: 500;
+}
+
+#taskbar button {
+    padding: 0 5px 0 5px;
+    border-radius: 6px;
+    color: @base07;
+    background-color: inherit;
+}
+
+#taskbar button:hover {
+    color: @base07;
+    background-color: @accentDim;
+}
+
+#taskbar button.minimized {
+    color: @base07;
+    background-color: @base02;
+}
+
+#taskbar button.active {
+    color: @base00;
+    background-color: @base0C;
+}
+
+#clock,
+#language,
+#wireplumber,
+#network,
+#bluetooth,
+#battery,
+#cpu,
+#memory,
+#disk,
+#temperature,
+#backlight,
+#custom-keyboard,
+#custom-wlsunset,
+#tray {
+    margin: 0 6px 0 6px;
+    padding: 0;
+    font-weight: 500;
+}
+
+#custom-launcher {
+    padding: 0 6px 0 6px;
+    color: @base05;
+}
+
+#clock,
+#language,
+#wireplumber,
+#network,
+#cpu,
+#memory,
+#disk,
+#temperature,
+#backlight,
+#battery {
+    color: @base05;
+}
+
+#leftWrapper {
+    background-color: @bg;
+    color: @base05;
+    border-radius: 6px;
+}
+
+#rightWrapper {
+    background-color: @bg;
+    color: @base05;
+    padding: 0 4px 0 4px;
+    border-radius: 6px;
+}
+
+#wireplumber.muted,
+#network.disconnected,
+#temparture.critical,
+#battery.charging,
+#battery.plugged {
+    color: @base08;
+}
+
+window#waybar.hidden {
+    opacity: 0.2;
+}
+
+#tray {
+    padding: 0 4px 0 4px;
+    border-radius: 6px;
+    background-color: @bg;
+}
+
+#tray > .passive {
+    -gtk-icon-effect: dim;
+}
+
+#tray > .needs-attention {
+    -gtk-icon-effect: highlight;
+}

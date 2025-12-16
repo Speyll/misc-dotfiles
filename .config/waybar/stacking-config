@@ -1,0 +1,199 @@
+{
+    "layer": "top",
+    "position": "bottom",
+    "height": 28,
+    "spacing": 0,
+    "margin": "3 60 3 60",
+    "start_hidden": false,
+    "fixed-center": true,
+    "mode": "dock",
+    "reload_style_on_change": true,
+
+    "modules-left": ["group/leftWrapper"],
+    "modules-center": [],
+    "modules-right": ["tray", "group/rightWrapper"],
+
+    "group/leftWrapper": {
+        "orientation": "horizontal",
+        "modules": [
+            "custom/launcher",
+            "wlr/taskbar",
+        ],
+    },
+
+    "group/rightWrapper": {
+        "orientation": "horizontal",
+        "modules": [
+            "group/laptop",
+            "group/status",
+            "group/networking",
+            "group/core",
+        ],
+    },
+
+    "group/core": {
+        "orientation": "inherit",
+        "modules": [
+            "wireplumber",
+            "clock",
+        ],
+    },
+
+    "group/networking": {
+        "orientation": "inherit",
+        "modules": [
+            "network",
+        ],
+    },
+
+    "group/status": {
+        "orientation": "inherit",
+        "modules": [
+            "custom/wlsunset",
+        ],
+    },
+
+    "group/stats": {
+        "orientation": "inherit",
+        "modules": [
+            "cpu",
+            "memory",
+        ],
+    },
+
+    "group/laptop": {
+        "orientation": "inherit",
+        "modules": [
+            "battery",
+            "backlight",
+        ],
+    },
+
+    "wlr/taskbar": {
+        "format": "{icon}",
+        "icon-size": 20,
+        "icon-theme": "breeze-dark",
+        "tooltip": true,
+        "tooltip-format": "{title}",
+        "on-click": "minimize-raise",
+        "on-click-middle": "close",
+        "rewrite": {
+            "Firefox Web Browser": "Firefox",
+            "mpv Media Player": "mpv",
+            "^(.{8}).+$": "$1…",
+        },
+        "app_ids-mapping": {
+            "imv": "img"
+        },
+    },
+
+    "tray": {
+        "icon-size": 18,
+        "spacing": 4,
+        "padding": "0 2px 0 2px",
+        "border-radius": 8
+    },
+
+    "custom/launcher": {
+        "format": "",
+        "on-click": "fuzz-launcher",
+        "tooltip": false
+    },
+
+    "wlr/workspaces": {
+        "all-outputs": true,
+        "format": "{name}"
+    },
+
+    "clock": {
+        "format": "{:L%H:%M}",
+        "timezone": "",
+        "tooltip": true,
+        "tooltip-format": "{:%a %d %b}",
+    },
+
+    "custom/keyboard": {
+        "format": "",
+        "tooltip": false,
+        "tooltip-format": "fr/us",
+    },
+
+    "custom/wlsunset": {
+        "format": "",
+         "on-click": "dash ~/.config/waybar/scripts/flavours-toggle",
+         "on-click-right": "dash ~/.config/waybar/scripts/sun-toggle",
+         "tooltip": true,
+         "tooltip-format": "Night light",
+    },
+
+    "wireplumber": {
+        "format": "",
+        "format-muted": "",
+        "on-click": "pavucontrol",
+        "max-volume": 150,
+        "scroll-step": 0.2,
+        "tooltip": true,
+        "tooltip-format": "{volume}%",
+    },
+
+    "network": {
+        "format-wifi": "",
+        "format-ethernet": "",
+        "format-linked": "",
+        "format-disconnected": "",
+        "tooltip": true,
+        "tooltip-format": "{ipaddr}",
+        "tooltip-format-disconnected": "Disconnected",
+        "on-click": "foot -e net-menu",
+    },
+
+    "bluetooth": {
+        "format": "",
+        "format-disabled": "",
+        "format-connected": "",
+        "format-alt-connected": "",
+        "tooltip-format-connected": "{device_enumerate}",
+        "tooltip-format-enumerate-connected": "{device_alias}",
+    },
+
+    "cpu": {
+        "format": "",
+        "tooltip": true,
+        "interval": 50,
+        "tooltip-format": "{usage}%",
+    },
+
+    "memory": {
+        "format": "",
+        "tooltip": true,
+        "tooltip-format": "{percentage}%",
+    },
+
+    "temperature": {
+        "critical-threshold": 80,
+        "format": "{icon}",
+        "format-icons": ["<span size='medium'></span>", "<span size='medium'></span>", "<span size='medium'></span>"],
+        "tooltip": true,
+        "tooltip-format": "{temperatureC}°C",
+    },
+
+    "backlight": {
+        "format": "",
+        "tooltip": true,
+        "tooltip-format": "{percent}%",
+    },
+
+    "battery": {
+        "states": {
+            "warning": 30,
+            "critical": 15
+        },
+        "format": "{icon}",
+        "format-charging": "{icon}",
+        "format-plugged": "{icon}",
+        "tooltip": true,
+        "tooltip-format": "{capacity}%",
+        "format-icons": ["", "", "", "", ""],
+    },
+
+}

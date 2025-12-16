@@ -1,0 +1,160 @@
+#!/bin/sh
+
+# ====================
+# Autostart
+# ====================
+$HOME/.config/autostart/autostart >/dev/null 2>&1 &
+pkill -x waybar; waybar -c "$HOME/.config/waybar/tiling-config" -s "$HOME/.config/waybar/style.css" >/dev/null 2>&1 &
+
+# ====================
+# Default Settings
+# ====================
+riverctl default-attach-mode below
+riverctl default-layout rivertile
+rivertile -view-padding 2 -outer-padding 2 -main-ratio 0.5 -main-location left -main-count 2 &
+
+# ====================
+# Appearance and Settings
+# ====================
+# Start flavours
+riverctl background-color 0xfbf1c7ff
+riverctl border-color-focused 0x427b58ff
+riverctl border-color-unfocused 0xfbf1c7ff
+# End flavours
+riverctl border-width 2
+riverctl xcursor-theme Breeze_Snow
+riverctl hide-cursor timeout 5000
+
+# ====================
+# Key Bindings
+# ====================
+# Basic Spawns
+riverctl map normal Super Return spawn 'foot'
+riverctl map normal Super D spawn 'fuzzel'
+riverctl map normal Super+Shift Q close
+riverctl map normal Super+Shift E exit
+riverctl map normal Super+Print spawn 'grim-print copy'
+riverctl map normal Super+Shift S spawn 'grim-print slurp'
+riverctl map normal Super Semicolon spawn 'bemoji'
+riverctl map normal Super Comma spawn 'clip-manager'
+
+# Navigation
+riverctl map normal Super J focus-view next
+riverctl map normal Super K focus-view previous
+
+# View Manipulation
+riverctl map normal Super+Shift J swap next
+riverctl map normal Super+Shift K swap previous
+riverctl map normal Super+Shift Return zoom
+
+# Main Ratio and Count
+riverctl map normal Super H send-layout-cmd rivertile "main-ratio -0.05"
+riverctl map normal Super L send-layout-cmd rivertile "main-ratio +0.05"
+riverctl map normal Super+Shift H send-layout-cmd rivertile "main-count +1"
+riverctl map normal Super+Shift L send-layout-cmd rivertile "main-count -1"
+
+# Move Views
+riverctl map normal Super+Alt H move left 100
+riverctl map normal Super+Alt J move down 100
+riverctl map normal Super+Alt K move up 100
+riverctl map normal Super+Alt L move right 100
+
+# Snap Views
+riverctl map normal Super+Alt+Control H snap left
+riverctl map normal Super+Alt+Control J snap down
+riverctl map normal Super+Alt+Control K snap up
+riverctl map normal Super+Alt+Control L snap right
+
+# Resize Views
+riverctl map normal Super+Alt+Shift H resize horizontal -100
+riverctl map normal Super+Alt+Shift J resize vertical 100
+riverctl map normal Super+Alt+Shift K resize vertical -100
+riverctl map normal Super+Alt+Shift L resize horizontal 100
+
+# Mouse Bindings
+riverctl map-pointer normal Super BTN_LEFT move-view
+riverctl map-pointer normal Super BTN_RIGHT resize-view
+riverctl map-pointer normal Super BTN_MIDDLE toggle-float
+
+# ====================
+# Tag Management
+# ====================
+for i in $(seq 1 9); do
+    tags=$((1 << ($i - 1)))
+
+    case $i in
+        1) key="ampersand" ;;
+        2) key="eacute" ;;
+        3) key="quotedbl" ;;
+        4) key="apostrophe" ;;
+        5) key="parenleft" ;;
+        6) key="egrave" ;;
+        7) key="minus" ;;
+        8) key="underscore" ;;
+        9) key="ccedilla" ;;
+    esac
+
+    riverctl map normal Super $key set-focused-tags $tags
+    riverctl map normal Super+Shift $key set-view-tags $tags
+    riverctl map normal Super+Control $key toggle-focused-tags $tags
+    riverctl map normal Super+Shift+Control $key toggle-view-tags $tags
+done
+
+# Super+0 for all tags
+all_tags=$(((1 << 32) - 1))
+riverctl map normal Super agrave set-focused-tags $all_tags
+riverctl map normal Super+Shift agrave set-view-tags $all_tags
+
+# Miscellaneous
+riverctl map normal Super Space toggle-float
+riverctl map normal Super F toggle-fullscreen
+
+# Layout Orientation
+riverctl map normal Super Up send-layout-cmd rivertile "main-location top"
+riverctl map normal Super Right send-layout-cmd rivertile "main-location right"
+riverctl map normal Super Down send-layout-cmd rivertile "main-location bottom"
+riverctl map normal Super Left send-layout-cmd rivertile "main-location left"
+
+# ====================
+# Modes
+# ====================
+riverctl declare-mode passthrough
+riverctl map normal Super F11 enter-mode passthrough
+riverctl map passthrough Super F11 enter-mode normal
+
+# ====================
+# Media Key Mappings
+# ====================
+for mode in normal locked; do
+    riverctl map $mode None XF86Eject spawn 'eject -T'
+    riverctl map $mode None Print spawn 'grim-copy'
+    riverctl map $mode None XF86AudioRaiseVolume spawn 'pamixer -i 5'
+    riverctl map $mode None XF86AudioLowerVolume spawn 'pamixer -d 5'
+    riverctl map $mode None XF86AudioMute spawn 'pamixer --toggle-mute'
+    riverctl map $mode None XF86AudioMedia spawn 'playerctl play-pause'
+    riverctl map $mode None XF86AudioPlay spawn 'playerctl play-pause'
+    riverctl map $mode None XF86AudioPrev spawn 'playerctl previous'
+    riverctl map $mode None XF86AudioNext spawn 'playerctl next'
+    riverctl map $mode None XF86MonBrightnessUp spawn 'brightnessctl set +5%'
+    riverctl map $mode None XF86MonBrightnessDown spawn 'brightnessctl set 5%-'
+done
+
+# ====================
+# Keyboard Settings
+# ====================
+riverctl keyboard-layout -v "fr,us" -options grp:rctrl_rshift_toggle
+riverctl set-repeat 50 300
+
+# ====================
+# Input Settings
+# ====================
+riverctl input *Touchpad* tap enabled
+riverctl input *Touchpad* drag enabled
+riverctl input *Touchpad* accel-profile adaptive
+riverctl input *Mouse* accel-profile flat
+
+# ====================
+# Rules
+# ====================
+riverctl rule-add -app-id 'float*' -title 'foo' float
+riverctl rule-add ssd

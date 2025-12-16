@@ -1,0 +1,24 @@
+#!/bin/sh
+
+sxhkd -c $HOME/.config/berry/sxhkdrc -m 1 &
+
+# Set decoration geometry
+berryc border_width       2
+berryc inner_border_width 2
+berryc title_height       0
+berryc edge_gap           0 0 0 0
+
+# Set decoration colors
+berryc focus_color         002b36
+berryc unfocus_color       002b36
+berryc inner_focus_color   6c71c4
+berryc inner_unfocus_color 073642
+berryc text_focus_color    657b83 
+berryc text_unfocus_color  657b83
+
+# Other options
+berryc pointer_focus    "true"
+berryc smart_place      "true"
+berryc draw_text        "true"
+berryc edge_lock        "true"
+berryc set_font         "kakwafont-12"
