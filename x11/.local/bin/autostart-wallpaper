@@ -1,0 +1,91 @@
+#!/bin/sh
+
+CONFIG="$HOME/.config/autostart.env"
+[ -f "$CONFIG" ] && . "$CONFIG"
+
+# --- Helper Functions ---
+get_orient() {
+    xrandr | awk '/ connected/ {
+        o = $1
+        geom = ""
+        for (i = 1; i <= NF; i++) {
+            if ($i ~ /[0-9]+x[0-9]+\+[0-9]+\+[0-9]+/) {
+                geom = $i
+                break
+            }
+        }
+        if (geom != "") {
+            split(geom, g, /[x+]/)
+            # If width is less than height, it is portrait
+            orient = (g[1] + 0 < g[2] + 0) ? "portrait" : "landscape"
+            print g[3], g[4], o ":" orient ":" geom
+        }
+    }' | sort -k1,1n -k2,2n | awk '{print $3}'
+}
+
+fetch_url() {
+    curl --connect-timeout 5 --max-time 10 -fsSL "$1" | shuf -n1 | tr -d '\r\n'
+}
+
+apply_feh() {
+    imgs=""
+    # feh applies images sequentially to active monitors in Xinerama left-to-right order
+    for item in $(get_orient); do
+        case "$item" in
+            *:portrait:*) imgs="$imgs $2" ;;
+            *)            imgs="$imgs $1" ;;
+        esac
+    done
+    [ -n "$imgs" ] && feh --bg-fill $imgs
+}
+
+apply_mpvpaper() {
+    pkill -f "xwinwrap.*mpv" 2>/dev/null
+    get_orient | while IFS=: read -r o or g; do
+        [ -z "$g" ] && continue
+        [ "$or" = "portrait" ] && fmt="bestvideo[width<=?1080]" vid="$2" || fmt="bestvideo[height<=?1080]" vid="$1"
+        xwinwrap -g "$g" -ni -b -fs -s -st -sp -a -ov -- mpv -wid WID --no-audio --loop-file=inf --no-osc --no-osd-bar --ytdl-format="$fmt" "$vid" &
+    done
+}
+
+# --- Aesthetics Logic ---
+case "$MODE" in
+    swaybg-random-online|feh-random-online)
+        # Apply local fallback immediately so display isn't blank while fetching
+        apply_feh "$DWALL" "$DVWALL"
+
+        w_url=$(fetch_url "$P_WALL")
+        vw_url=$(fetch_url "$P_VWALL")
+
+        if [ -n "$w_url" ]; then
+            curl --connect-timeout 5 --max-time 15 -fsSL "$w_url" -o /tmp/wall.jpg &
+            [ -n "$vw_url" ] && curl --connect-timeout 5 --max-time 15 -fsSL "$vw_url" -o /tmp/vert_wall.jpg &
+            wait
+
+            if [ -s /tmp/wall.jpg ]; then
+                apply_feh /tmp/wall.jpg /tmp/vert_wall.jpg
+            fi
+        fi
+        ;;
+    swaybg-random|feh-random)
+        w=$(find "$HOME/pictures/walls/" -maxdepth 1 -type f ! -name "vert-*" \
+            \( -name "*.jpg" -o -name "*.jpeg" -o -name "*.png" -o -name "*.webp" \) | shuf -n1)
+        vw=$(find "$HOME/pictures/walls/" -maxdepth 1 -type f -name "vert-*" \
+            \( -name "*.jpg" -o -name "*.jpeg" -o -name "*.png" -o -name "*.webp" \) | shuf -n1)
+
+        apply_feh "${w:-$DWALL}" "${vw:-$DVWALL}"
+        ;;
+    mpvpaper-online|mpv-online)
+        apply_mpvpaper "$(fetch_url "$P_VID")" "$(fetch_url "$P_VVID")"
+        ;;
+    *)
+        apply_feh "$DWALL" "$DVWALL"
+        ;;
+esac
+
+# --- Theme Apply ---
+if [ "$THEME_MODE" = "auto" ] && [ -f /tmp/wall.jpg ]; then
+    flavours generate dark /tmp/wall.jpg && flavours apply generated
+elif [ "$THEME_MODE" = "fixed" ]; then
+    flavours apply "$THEME_NAME"
+fi

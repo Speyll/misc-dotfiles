@@ -1,0 +1,41 @@
+#!/bin/sh
+
+CONFIG="$HOME/.config/autostart.env"
+[ -f "$CONFIG" ] && . "$CONFIG"
+
+# 1. Start Audio Stack FIRST (if enabled or using systemd)
+if [ "$AUDIO" = "true" ]; then
+    pipewire &
+    sleep 1
+    wireplumber &
+    pipewire-pulse &
+    sleep 1
+fi
+
+# 2. Background Utilities
+redshift -l 36.7:3.08 &
+dunst &
+command -v clipcatd >/dev/null 2>&1 && clipcatd &
+
+if command -v openrgb >/dev/null 2>&1; then
+    openrgb --server -p pureWhite &
+fi
+
+# 3. PipeWire Volume + Clock loop for dwm status bar
+(
+    while true; do
+        # Protect wpctl with a 1s timeout in case WirePlumber is restarting
+        vol_raw=$(timeout 1s wpctl get-volume @DEFAULT_AUDIO_SINK@ 2>/dev/null)
+        if echo "$vol_raw" | grep -q "MUTED"; then
+            vol="MUTED"
+        elif [ -n "$vol_raw" ]; then
+            vol="$(echo "$vol_raw" | awk '{print int($2 * 100)}')%"
+        else
+            vol="N/A"
+        fi
+
+        clock=$(date '+%b %d  %H:%M')
+        xsetroot -name " VOL: $vol | $clock "
+        sleep 1
+    done
+) &

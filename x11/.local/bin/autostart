@@ -1,0 +1,44 @@
+#!/bin/sh
+
+CONFIG="$HOME/.config/autostart.env"
+[ -f "$CONFIG" ] && . "$CONFIG"
+
+# Safe log fallback if $LOG is not defined in env
+LOG="${LOG:-$HOME/.cache/autostart.log}"
+exec >> "$LOG" 2>&1
+echo "=== Autostart: $(date) ==="
+
+# 1. Cleanup old instances
+killall -q flavours mpvpaper feh dunst redshift xclip openrgb sunshine
+
+# 2. Environment & Auth
+if command -v gnome-keyring-daemon >/dev/null 2>&1; then
+    eval "$(gnome-keyring-daemon --start --components=secrets)"
+fi
+
+# X11 Polkit Agent (avoid hyprpolkitagent on X11)
+if ! pgrep -f "polkit.*agent" >/dev/null 2>&1; then
+    for agent in \
+        /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 \
+        /usr/libexec/polkit-gnome-authentication-agent-1 \
+        /usr/lib/polkit-kde-authentication-agent-1; do
+        if [ -f "$agent" ]; then
+            "$agent" &
+            break
+        fi
+    done
+fi
+
+# 3. Interface & Non-blocking D-Bus update
+gsettings set org.gnome.desktop.interface cursor-theme "${CURSOR:-Adwaita}" 2>/dev/null
+gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark' 2>/dev/null
+
+# Import X11 environment into DBus in the background so it cannot block script execution
+(dbus-update-activation-environment --systemd DISPLAY XAUTHORITY 2>/dev/null) &
+
+# 4. Launch Services & Wallpaper FIRST
+[ -x "$HOME/.local/bin/autostart-services" ] && "$HOME/.local/bin/autostart-services" &
+[ -x "$HOME/.local/bin/autostart-wallpaper" ] && "$HOME/.local/bin/autostart-wallpaper" &
+
+# 5. Delayed Tasks
+[ "$UPDATE_SCAN" = "true" ] && (sleep 10; "$HOME/.local/bin/updtscan") &
