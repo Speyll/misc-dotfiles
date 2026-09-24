@@ -9,24 +9,39 @@ exec >> "$LOG" 2>&1
 echo "=== Autostart: $(date) ==="
 
 # 1. Cleanup old instances
-killall -q flavours mpvpaper feh dunst redshift xclip openrgb sunshine
+killall -q flavours mpvpaper feh dunst redshift clipcatd openrgb sunshine lxqt-policykit-agent
+sleep 1
 
 # 2. Environment & Auth
 if command -v gnome-keyring-daemon >/dev/null 2>&1; then
     eval "$(gnome-keyring-daemon --start --components=secrets)"
 fi
 
-# X11 Polkit Agent (avoid hyprpolkitagent on X11)
-if ! pgrep -f "polkit.*agent" >/dev/null 2>&1; then
-    for agent in \
-        /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 \
-        /usr/libexec/polkit-gnome-authentication-agent-1 \
-        /usr/lib/polkit-kde-authentication-agent-1; do
-        if [ -f "$agent" ]; then
-            "$agent" &
-            break
-        fi
-    done
+# Polkit Agent Handoff
+if ! pgrep -f "(pol|policy)kit.*agent" >/dev/null; then
+    # 1. Direct binary execution for LXQt (no native systemd unit)
+    if command -v lxqt-policykit-agent >/dev/null 2>&1; then
+        lxqt-policykit-agent &
+
+    # 2. Systemd path for agents that ship unit files
+    elif [ -d /run/systemd/system ]; then
+        systemctl --user start hyprpolkitagent.service 2>/dev/null || \
+        systemctl --user start plasma-polkit-agent.service 2>/dev/null || \
+        systemctl --user start polkit-gnome-authentication-agent-1.service 2>/dev/null
+
+    # 3. Non-systemd fallback path
+    else
+        for agent in \
+            /usr/libexec/hyprpolkitagent \
+            /usr/lib/polkit-kde-authentication-agent-1 \
+            /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 \
+            /usr/libexec/polkit-gnome-authentication-agent-1; do
+            if [ -f "$agent" ]; then
+                "$agent" &
+                break
+            fi
+        done
+    fi
 fi
 
 # 3. Interface & Non-blocking D-Bus update

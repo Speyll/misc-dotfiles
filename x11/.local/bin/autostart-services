@@ -35,7 +35,7 @@ fi
         fi
 
         clock=$(date '+%b %d  %H:%M')
-        xsetroot -name " VOL: $vol | $clock "
+        xsetroot -name "  $vol | 󰥔 $clock "
         sleep 1
     done
 ) &

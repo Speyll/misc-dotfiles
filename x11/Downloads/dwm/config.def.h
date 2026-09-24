@@ -1,4 +1,5 @@
 /* See LICENSE file for copyright and license details. */
+#include <X11/XF86keysym.h>
 
 /* appearance */
 static const unsigned int borderpx  = 1;        /* border pixel of windows */
@@ -29,8 +30,7 @@ static const Rule rules[] = {
      *	WM_NAME(STRING) = title
      */
     /* class      instance    title       tags mask     isfloating   monitor */
-    { "Gimp",     NULL,       NULL,       0,            1,           -1 },
-    { "Firefox",  NULL,       NULL,       1 << 8,       0,           -1 },
+    { "plachol",  NULL,       NULL,       0,            1,           -1 },
 };
 
 /* layout(s) */
@@ -67,6 +67,9 @@ static const Key keys[] = {
     /* modifier                 key        function        argument */
     { MODKEY,                   XK_d,      spawn,          {.v = dmenucmd } },
     { MODKEY,                   XK_Return, spawn,          {.v = termcmd } },
+    { MODKEY,                   XK_v,      spawn,          {.v = (const char*[]){ "clipcat-menu", "insert", NULL } } },
+    { MODKEY|ShiftMask,         XK_s,      spawn,          {.v = (const char*[]){ "sh", "-c", "tmp=$(mktemp /tmp/sc_XXXXXX.png) && maim -s \"$tmp\" && xclip -selection clipboard -t image/png \"$tmp\" >/dev/null 2>&1; rm -f \"$tmp\"", NULL } } },
+    { MODKEY,                   XK_Print,  spawn,          {.v = (const char*[]){ "sh", "-c", "maim | tee ~/Pictures/screenshot-$(date +%Y-%m-%d_%H-%M-%S).png | xclip -selection clipboard -t image/png >/dev/null 2>&1", NULL } } },
     { MODKEY|ShiftMask,         XK_Return, zoom,           {0} },
     { MODKEY,                   XK_b,      togglebar,      {0} },
     { MODKEY,                   XK_j,      focusstack,     {.i = +1 } },
@@ -88,15 +91,23 @@ static const Key keys[] = {
     { MODKEY,                   XK_period, focusmon,       {.i = +1 } },
     { MODKEY|ShiftMask,         XK_comma,  tagmon,         {.i = -1 } },
     { MODKEY|ShiftMask,         XK_period, tagmon,         {.i = +1 } },
-    TAGKEYS(                    XK_1,                      0)
-    TAGKEYS(                    XK_2,                      1)
-    TAGKEYS(                    XK_3,                      2)
-    TAGKEYS(                    XK_4,                      3)
-    TAGKEYS(                    XK_5,                      4)
-    TAGKEYS(                    XK_6,                      5)
-    TAGKEYS(                    XK_7,                      6)
-    TAGKEYS(                    XK_8,                      7)
-    TAGKEYS(                    XK_9,                      8)
+
+    { 0, XF86XK_AudioRaiseVolume,  spawn, {.v = (const char*[]){ "pamixer", "-i", "5", NULL } } },
+    { 0, XF86XK_AudioLowerVolume,  spawn, {.v = (const char*[]){ "pamixer", "-d", "5", NULL } } },
+    { 0, XF86XK_AudioMute,         spawn, {.v = (const char*[]){ "pamixer", "-t", NULL } } },
+    { 0, XF86XK_MonBrightnessUp,   spawn, {.v = (const char*[]){ "brightnessctl", "set", "5%+", NULL } } },
+    { 0, XF86XK_MonBrightnessDown, spawn, {.v = (const char*[]){ "brightnessctl", "set", "5%-", NULL } } },
+
+        TAGKEYS(                    XK_1,                      0)
+        TAGKEYS(                    XK_2,                      1)
+        TAGKEYS(                    XK_3,                      2)
+        TAGKEYS(                    XK_4,                      3)
+        TAGKEYS(                    XK_5,                      4)
+        TAGKEYS(                    XK_6,                      5)
+        TAGKEYS(                    XK_7,                      6)
+        TAGKEYS(                    XK_8,                      7)
+        TAGKEYS(                    XK_9,                      8)
+
     { MODKEY|ShiftMask,         XK_e,      quit,           {0} },
 };
 
