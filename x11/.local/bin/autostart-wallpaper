@@ -27,16 +27,14 @@ fetch_url() {
     curl --connect-timeout 5 --max-time 10 -fsSL "$1" | shuf -n1 | tr -d '\r\n'
 }
 
-apply_feh() {
-    imgs=""
-    # feh applies images sequentially to active monitors in Xinerama left-to-right order
+apply_hsetroot() {
+    wall="$1"
     for item in $(get_orient); do
         case "$item" in
-            *:portrait:*) imgs="$imgs $2" ;;
-            *)            imgs="$imgs $1" ;;
+            *:portrait:*) [ -n "$2" ] && wall="$2" ;;
         esac
     done
-    [ -n "$imgs" ] && feh --bg-fill $imgs
+    [ -n "$wall" ] && [ -f "$wall" ] && hsetroot -fill "$wall"
 }
 
 apply_mpvpaper() {
@@ -50,9 +48,9 @@ apply_mpvpaper() {
 
 # --- Aesthetics Logic ---
 case "$MODE" in
-    swaybg-random-online|feh-random-online)
+    swaybg-random-online|hsetroot-random-online|feh-random-online)
         # Apply local fallback immediately so display isn't blank while fetching
-        apply_feh "$DWALL" "$DVWALL"
+        apply_hsetroot "$DWALL" "$DVWALL"
 
         w_url=$(fetch_url "$P_WALL")
         vw_url=$(fetch_url "$P_VWALL")
@@ -63,23 +61,23 @@ case "$MODE" in
             wait
 
             if [ -s /tmp/wall.jpg ]; then
-                apply_feh /tmp/wall.jpg /tmp/vert_wall.jpg
+                apply_hsetroot /tmp/wall.jpg /tmp/vert_wall.jpg
             fi
         fi
         ;;
-    swaybg-random|feh-random)
+    swaybg-random|hsetroot-random|feh-random)
         w=$(find "$HOME/pictures/walls/" -maxdepth 1 -type f ! -name "vert-*" \
             \( -name "*.jpg" -o -name "*.jpeg" -o -name "*.png" -o -name "*.webp" \) | shuf -n1)
         vw=$(find "$HOME/pictures/walls/" -maxdepth 1 -type f -name "vert-*" \
             \( -name "*.jpg" -o -name "*.jpeg" -o -name "*.png" -o -name "*.webp" \) | shuf -n1)
 
-        apply_feh "${w:-$DWALL}" "${vw:-$DVWALL}"
+        apply_hsetroot "${w:-$DWALL}" "${vw:-$DVWALL}"
         ;;
     mpvpaper-online|mpv-online)
         apply_mpvpaper "$(fetch_url "$P_VID")" "$(fetch_url "$P_VVID")"
         ;;
     *)
-        apply_feh "$DWALL" "$DVWALL"
+        apply_hsetroot "$DWALL" "$DVWALL"
         ;;
 esac
 

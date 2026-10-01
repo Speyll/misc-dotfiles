@@ -66,6 +66,7 @@ static const char *termcmd[]  = { "st", NULL };
 static const Key keys[] = {
     /* modifier                 key        function        argument */
     { MODKEY,                   XK_d,      spawn,          {.v = dmenucmd } },
+    { MODKEY|ShiftMask,         XK_d,      spawn,          {.v = (const char*[]){ "sh", "-c", "dmenu-desktop", NULL } } },
     { MODKEY,                   XK_Return, spawn,          {.v = termcmd } },
     { MODKEY,                   XK_v,      spawn,          {.v = (const char*[]){ "clipcat-menu", "insert", NULL } } },
     { MODKEY|ShiftMask,         XK_s,      spawn,          {.v = (const char*[]){ "sh", "-c", "tmp=$(mktemp /tmp/sc_XXXXXX.png) && maim -s \"$tmp\" && xclip -selection clipboard -t image/png \"$tmp\" >/dev/null 2>&1; rm -f \"$tmp\"", NULL } } },
@@ -75,7 +76,7 @@ static const Key keys[] = {
     { MODKEY,                   XK_j,      focusstack,     {.i = +1 } },
     { MODKEY,                   XK_k,      focusstack,     {.i = -1 } },
     { MODKEY,                   XK_i,      incnmaster,     {.i = +1 } },
-    { MODKEY|ShiftMask,         XK_d,      incnmaster,     {.i = -1 } },
+    { MODKEY|ShiftMask,         XK_p,      incnmaster,     {.i = -1 } },
     { MODKEY,                   XK_h,      setmfact,       {.f = -0.05} },
     { MODKEY,                   XK_l,      setmfact,       {.f = +0.05} },
     { MODKEY,                   XK_Tab,    view,           {0} },

@@ -1,0 +1,22 @@
+#!/usr/bin/bash
+# Scan desktop files and launch selection via gio
+
+APP_DIRS=(
+  "/usr/share/applications"
+  "$HOME/.local/share/applications"
+  "/var/lib/flatpak/exports/share/applications"
+  "$HOME/.local/share/flatpak/exports/share/applications"
+)
+
+# Find desktop files, extract Name and Exec path
+CHOICE=$(find "${APP_DIRS[@]}" -name "*.desktop" 2>/dev/null \
+  | xargs -I{} grep -Hm1 "^Name=" {} \
+  | sed 's/.*Name=//' \
+  | sort -u \
+  | dmenu -i -p "Run:")
+
+[ -z "$CHOICE" ] && exit 0
+
+# Find matching desktop file and execute via gtk/gio
+FILE=$(grep -l -m1 "^Name=$CHOICE" $(find "${APP_DIRS[@]}" -name "*.desktop" 2>/dev/null))
+[ -n "$FILE" ] && gio launch "$FILE"
