@@ -3,6 +3,12 @@
 CONFIG="$HOME/.config/autostart.env"
 [ -f "$CONFIG" ] && . "$CONFIG"
 
+# Respect XDG Base Directory Specification for cache
+CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/autostart-wallpaper"
+mkdir -p "$CACHE_DIR"
+CACHE_WALL="$CACHE_DIR/wall.jpg"
+CACHE_VWALL="$CACHE_DIR/vert_wall.jpg"
+
 # --- Helper Functions ---
 get_orient() {
     xrandr | awk '/ connected/ {
@@ -28,13 +34,21 @@ fetch_url() {
 }
 
 apply_hsetroot() {
-    wall="$1"
+    l_wall="$1"
+    p_wall="${2:-$1}" # Fall back to landscape image if no portrait is provided
+
+    # X11 maps multiple `-fill` arguments left-to-right to the monitors natively.
+    # We dynamically build the command so it correctly places landscape images on
+    # horizontal screens and portrait images on vertical screens simultaneously.
+    cmd="hsetroot"
     for item in $(get_orient); do
         case "$item" in
-            *:portrait:*) [ -n "$2" ] && wall="$2" ;;
+            *:portrait:*) cmd="$cmd -fill '$p_wall'" ;;
+            *)            cmd="$cmd -fill '$l_wall'" ;;
         esac
     done
-    [ -n "$wall" ] && [ -f "$wall" ] && hsetroot -fill "$wall"
+
+    eval "$cmd"
 }
 
 apply_mpvpaper() {
@@ -42,30 +56,33 @@ apply_mpvpaper() {
     get_orient | while IFS=: read -r o or g; do
         [ -z "$g" ] && continue
         [ "$or" = "portrait" ] && fmt="bestvideo[width<=?1080]" vid="$2" || fmt="bestvideo[height<=?1080]" vid="$1"
-        xwinwrap -g "$g" -ni -b -fs -s -st -sp -a -ov -- mpv -wid WID --no-audio --loop-file=inf --no-osc --no-osd-bar --ytdl-format="$fmt" "$vid" &
+        xwinwrap -g "$g" -ni -b -fs -s -st -sp -a -ov -- mpv -wid WID --no-audio --loop-file=inf --no-osc --no-osd-bar --ytdl-format="$fmt" "$vid" >/dev/null 2>&1 &
     done
 }
 
 # --- Aesthetics Logic ---
 case "$MODE" in
-    swaybg-random-online|hsetroot-random-online|feh-random-online)
-        # Apply local fallback immediately so display isn't blank while fetching
-        apply_hsetroot "$DWALL" "$DVWALL"
+    *random-online)
+        # Apply local fallback immediately only if files exist
+        if [ -f "$DWALL" ] && [ -f "$DVWALL" ]; then
+            apply_hsetroot "$DWALL" "$DVWALL"
+        fi
 
         w_url=$(fetch_url "$P_WALL")
         vw_url=$(fetch_url "$P_VWALL")
 
-        if [ -n "$w_url" ]; then
-            curl --connect-timeout 5 --max-time 15 -fsSL "$w_url" -o /tmp/wall.jpg &
-            [ -n "$vw_url" ] && curl --connect-timeout 5 --max-time 15 -fsSL "$vw_url" -o /tmp/vert_wall.jpg &
+        # Only proceed if we successfully fetched URLs
+        if [ -n "$w_url" ] && [ -n "$vw_url" ]; then
+            curl --connect-timeout 5 --max-time 15 -fsSL "$w_url" -o "$CACHE_WALL" &
+            curl --connect-timeout 5 --max-time 15 -fsSL "$vw_url" -o "$CACHE_VWALL" &
             wait
 
-            if [ -s /tmp/wall.jpg ]; then
-                apply_hsetroot /tmp/wall.jpg /tmp/vert_wall.jpg
+            if [ -s "$CACHE_WALL" ] && [ -s "$CACHE_VWALL" ]; then
+                apply_hsetroot "$CACHE_WALL" "$CACHE_VWALL"
             fi
         fi
         ;;
-    swaybg-random|hsetroot-random|feh-random)
+    *random)
         w=$(find "$HOME/pictures/walls/" -maxdepth 1 -type f ! -name "vert-*" \
             \( -name "*.jpg" -o -name "*.jpeg" -o -name "*.png" -o -name "*.webp" \) | shuf -n1)
         vw=$(find "$HOME/pictures/walls/" -maxdepth 1 -type f -name "vert-*" \
@@ -73,7 +90,7 @@ case "$MODE" in
 
         apply_hsetroot "${w:-$DWALL}" "${vw:-$DVWALL}"
         ;;
-    mpvpaper-online|mpv-online)
+    *mpv-online|*mpvpaper-online)
         apply_mpvpaper "$(fetch_url "$P_VID")" "$(fetch_url "$P_VVID")"
         ;;
     *)
@@ -82,8 +99,16 @@ case "$MODE" in
 esac
 
 # --- Theme Apply ---
-if [ "$THEME_MODE" = "auto" ] && [ -f /tmp/wall.jpg ]; then
-    flavours generate dark /tmp/wall.jpg && flavours apply generated
+if [ "$THEME_MODE" = "auto" ]; then
+    # Wildcard match for any of the online random modes
+    case "$MODE" in
+        *random-online)
+            [ -f "$CACHE_WALL" ] && flavours generate dark "$CACHE_WALL" && flavours apply generated
+            ;;
+        *)
+            flavours generate dark "$DWALL" && flavours apply generated
+            ;;
+    esac
 elif [ "$THEME_MODE" = "fixed" ]; then
     flavours apply "$THEME_NAME"
 fi
